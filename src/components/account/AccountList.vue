@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="dialogFavListVisible" title="收藏夹详情" :before-close="handleFavClose">
+  <el-dialog v-model="dialogFavListVisible" title="收藏夹详情" :before-close="handleFavClose" :destroy-on-close="true">
     <FavourList :fatherTableData="favDataRef" :fatherTotal="favCountRef" :fatherMid="favMidRef" />
   </el-dialog>
   <el-table :data="tableData">
