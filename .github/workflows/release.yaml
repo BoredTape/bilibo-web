@@ -1,0 +1,40 @@
+name: Auto Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+
+jobs:
+  release:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+    name: Release
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: 检查master分支
+        uses: actions/checkout@v4
+
+      - name: 设置Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Build
+        run: |
+          sed -i -e "s/0.0.0/$(git describe --abbrev=0 --tags)/g" package.json
+          npm instal
+          npm run build
+          tar -czvf dist.tar.gz dist/*
+          zip -r dist.zip dist/*
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist.tar.gz
+            dist.zip
+
