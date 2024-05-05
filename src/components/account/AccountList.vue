@@ -1,6 +1,6 @@
 <template>
-  <el-dialog v-model="dialogFavListVisible" title="收藏夹详情" :before-close="handleFavClose" :destroy-on-close="true">
-    <FavourList :fatherTableData="favDataRef" :fatherTotal="favCountRef" :fatherMid="favMidRef" />
+  <el-dialog v-model="dialogSettingsVisible" title="同步设置" :before-close="handleFavClose" :destroy-on-close="true">
+    <AccountSettings :fatherTableData="favDataRef" :fatherTotal="favCountRef" :fatherMid="favMidRef" :fatherWatchLaterSync="watchLaterSyncRef" />
   </el-dialog>
   <el-table :data="tableData">
     <!-- <el-table-column prop="mid" label="id" /> -->
@@ -19,19 +19,22 @@
         <el-button type="danger" v-if="scope.row.status == 2">账号异常</el-button>
       </template>
     </el-table-column>
+    <el-table-column prop="watch_later_count" label="稍后再看数量" />
     <el-table-column prop="folders_count" label="收藏夹数量" />
-    <el-table-column label="收藏夹操作" fixed="right" width="180">
+    <el-table-column fixed="right" label="操作" width="120">
       <template #default="scope">
+        <el-row>
+        <el-button size="small" @click="JumpDirExplorer(scope.row.mid)">查看文件夹</el-button>
+        </el-row>
+        <el-row>
         <el-button
           size="small"
-          @click="ShowFavList(scope.row.mid, scope.row.folders, scope.row.folders_count)"
-          >设置</el-button
+          @click="ShowSettings(scope.row.mid, scope.row.folders, scope.row.folders_count,scope.row.watch_later_sync)"
+          >同步设置</el-button
         >
-        <el-button size="small" @click="JumpFavExplorer(scope.row.mid)">查看</el-button>
-      </template>
-    </el-table-column>
-    <el-table-column fixed="right" label="操作" width="180">
-      <template #default="scope">
+      </el-row>
+      <el-divider />
+      <el-row>
         <el-button
           size="small"
           @click="saveOperation()"
@@ -39,7 +42,10 @@
         >
           重新登陆
         </el-button>
-        <el-button size="small" @click="deleteOperation(scope.row)">删除</el-button>
+      </el-row>
+      <el-row>
+        <el-button  type="danger" size="small" @click="deleteOperation(scope.row)">删除</el-button>
+      </el-row>
       </template>
     </el-table-column>
   </el-table>
@@ -58,7 +64,7 @@ import { getAccountList, delAccount } from '@/apis/account'
 import type ElTable from 'element-plus/es/components/table'
 import { ref, inject, defineExpose } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import FavourList from '@/components/favour/FavourList.vue'
+import AccountSettings from '@/components/account/AccountSettings.vue'
 import router from '@/router'
 
 const query = ref({
@@ -110,6 +116,8 @@ interface User {
   uname: string
   folders_count: number
   folders: Folder[]
+  watch_later_count: number
+  watch_later_sync: number
 }
 
 const tableData = ref<User[]>([])
@@ -131,22 +139,24 @@ GetUserList()
 const favDataRef = ref<Folder[]>([])
 const favCountRef = ref<number>(0)
 const favMidRef = ref<number>(0)
+const watchLaterSyncRef = ref<number>(0)
 
-const dialogFavListVisible = ref(false)
-const ShowFavList = (favMid: number, favData: Folder[], favCount: number) => {
+const dialogSettingsVisible = ref(false)
+const ShowSettings = (favMid: number, favData: Folder[], favCount: number,watchLaterSync:number) => {
   favDataRef.value = favData
   favCountRef.value = favCount
   favMidRef.value = favMid
-  dialogFavListVisible.value = true
+  watchLaterSyncRef.value = watchLaterSync
+  dialogSettingsVisible.value = true
 }
 
 const handleFavClose = () => {
-  dialogFavListVisible.value = false
+  dialogSettingsVisible.value = false
   GetUserList()
 }
 
-const JumpFavExplorer = (mid: number) => {
-  router.push({ name: 'account_fav', params: { mid: mid } })
+const JumpDirExplorer = (mid: number) => {
+  router.push({ name: 'account_dir', params: { mid: mid } })
 }
 </script>
 <style lang="scss" scoped>

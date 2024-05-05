@@ -14,7 +14,7 @@ import router from '@/router'
 import { ref } from 'vue'
 
 const request = {
-  baseUrl: '/api/fav/dir',
+  baseUrl: '/api/account/dir',
   params: { adapter: router.currentRoute.value.params.mid },
 
   // And/or transform request callback

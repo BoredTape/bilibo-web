@@ -7,8 +7,10 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AccountDirExplorer: typeof import('./src/components/account/AccountDirExplorer.vue')['default']
     AccountList: typeof import('./src/components/account/AccountList.vue')['default']
     AccountSave: typeof import('./src/components/account/AccountSave.vue')['default']
+    AccountSettings: typeof import('./src/components/account/AccountSettings.vue')['default']
     ElAffix: typeof import('element-plus/es')['ElAffix']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
@@ -17,6 +19,7 @@ declare module 'vue' {
     ElCol: typeof import('element-plus/es')['ElCol']
     ElContainer: typeof import('element-plus/es')['ElContainer']
     ElDialog: typeof import('element-plus/es')['ElDialog']
+    ElDivider: typeof import('element-plus/es')['ElDivider']
     ElHeader: typeof import('element-plus/es')['ElHeader']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElImage: typeof import('element-plus/es')['ElImage']
@@ -31,12 +34,11 @@ declare module 'vue' {
     ElTabPane: typeof import('element-plus/es')['ElTabPane']
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElText: typeof import('element-plus/es')['ElText']
-    FavourExplorer: typeof import('./src/components/favour/FavourExplorer.vue')['default']
-    FavourList: typeof import('./src/components/favour/FavourList.vue')['default']
     HeaderLayout: typeof import('./src/components/layout/HeaderLayout.vue')['default']
     MenuLayout: typeof import('./src/components/layout/MenuLayout.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TaskList: typeof import('./src/components/task/TaskList.vue')['default']
     VideoList: typeof import('./src/components/video/VideoList.vue')['default']
   }
 }
