@@ -2,11 +2,11 @@
   <div class="header">
     <el-button @click="jump">返回账号页</el-button>
   </div>
-  <FavourExplorer />
+  <DirExplorer />
 </template>
 <script lang="ts" setup>
 import router from '@/router'
-import FavourExplorer from '@/components/favour/FavourExplorer.vue'
+import DirExplorer from '@/components/account/AccountDirExplorer.vue'
 const jump = () => {
   router.push({ name: 'account' })
 }
