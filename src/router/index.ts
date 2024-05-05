@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AccountView from '@/views/AccountView.vue'
-import { VideoPlay, User, GobletSquareFull } from '@element-plus/icons-vue'
+import { VideoPlay, User, GobletSquareFull,Cpu } from '@element-plus/icons-vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,9 +19,9 @@ const router = createRouter({
       }
     },
     {
-      path: '/fav_explorer/:mid',
-      name: 'account_fav',
-      component: () => import('@/views/FavourExplorerView.vue')
+      path: '/dir_explorer/:mid',
+      name: 'account_dir',
+      component: () => import('@/views/DirExplorerView.vue')
     },
     {
       path: '/videos',
@@ -31,6 +31,15 @@ const router = createRouter({
         name: '视频同步详情'
       },
       component: () => import('@/views/VideosView.vue')
+    },
+    {
+      path: '/tasks',
+      name: 'tasks',
+      meta: {
+        icon: Cpu,
+        name: '任务详情'
+      },
+      component: () => import('@/views/TaskView.vue')
     }
   ]
 })
