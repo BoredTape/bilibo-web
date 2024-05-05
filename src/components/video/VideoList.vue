@@ -1,7 +1,7 @@
 <template>
   <el-table :data="tableData">
     <el-table-column prop="account_name" label="用户" />
-    <el-table-column prop="fav_title" label="收藏夹" />
+    <el-table-column prop="source_title" label="源" />
     <el-table-column prop="title" label="视频标题" />
     <el-table-column prop="part" label="分P" />
     <el-table-column label="状态" v-if="status == 3">
@@ -43,9 +43,10 @@ interface Video {
   bvid: string
   status: number
   mlid: number
-  fav_title: string
+  source_title: string
   mid: number
   account: number
+  type: number
 }
 
 const tableData = ref<Video[]>([])
