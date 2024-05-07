@@ -1,6 +1,9 @@
 <template>
   <el-dialog v-model="dialogSettingsVisible" title="同步设置" :before-close="handleFavClose" :destroy-on-close="true">
-    <AccountSettings :fatherTableData="favDataRef" :fatherTotal="favCountRef" :fatherMid="favMidRef" :fatherWatchLaterSync="watchLaterSyncRef" />
+    <AccountSettings 
+    :fatherFavTableData="favDataRef" :fatherFavTotal="favCountRef"
+    :fatherCollectedTableData="collectedDataRef" :fatherCollectedTotal="collectedTotalRef"
+    :fatherMid="favMidRef" :fatherWatchLaterSync="watchLaterSyncRef" />
   </el-dialog>
   <el-table :data="tableData">
     <!-- <el-table-column prop="mid" label="id" /> -->
@@ -29,7 +32,7 @@
         <el-row>
         <el-button
           size="small"
-          @click="ShowSettings(scope.row.mid, scope.row.folders, scope.row.folders_count,scope.row.watch_later_sync)"
+          @click="ShowSettings(scope.row.mid, scope.row.folders, scope.row.folders_count, scope.row.collected, scope.row.collected_count, scope.row.watch_later_sync)"
           >同步设置</el-button
         >
       </el-row>
@@ -109,6 +112,13 @@ interface Folder {
   sync: number
 }
 
+interface Collected{
+  coll_id:number
+  title:string
+  media_count: number
+  sync: number
+}
+
 interface User {
   mid: number
   status: number
@@ -116,6 +126,8 @@ interface User {
   uname: string
   folders_count: number
   folders: Folder[]
+  collected: Collected[]
+  collected_count: number
   watch_later_count: number
   watch_later_sync: number
 }
@@ -138,13 +150,26 @@ GetUserList()
 
 const favDataRef = ref<Folder[]>([])
 const favCountRef = ref<number>(0)
+
+const collectedDataRef = ref<Collected[]>([])
+const collectedTotalRef = ref<number>(0)
+
 const favMidRef = ref<number>(0)
 const watchLaterSyncRef = ref<number>(0)
 
 const dialogSettingsVisible = ref(false)
-const ShowSettings = (favMid: number, favData: Folder[], favCount: number,watchLaterSync:number) => {
+const ShowSettings = (
+  favMid: number, 
+  favData: Folder[], favCount: number,
+  collectedData: Collected[], collectedTotal: number,
+  watchLaterSync:number
+) => {
   favDataRef.value = favData
   favCountRef.value = favCount
+
+  collectedDataRef.value = collectedData
+  collectedTotalRef.value = collectedTotal
+
   favMidRef.value = favMid
   watchLaterSyncRef.value = watchLaterSync
   dialogSettingsVisible.value = true
