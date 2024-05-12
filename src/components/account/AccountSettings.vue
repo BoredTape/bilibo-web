@@ -85,10 +85,12 @@
     </el-row>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { defineProps, ref } from 'vue'
 import { setSyncFav, setNotSyncFav } from '@/apis/favour'
 import { setSyncWatchLater, setNotSyncWatchLater } from '@/apis/watch_later'
 import { setSyncCollected, setNotSyncCollected } from '@/apis/collected'
+import { getAccountSettings } from '@/apis/account'
+
 
 interface Folder {
   mlid: number
@@ -105,16 +107,27 @@ media_count: number
 sync: number
 }
 
+interface AccountSettings {
+  mid: number
+  folders: Folder[]
+  watch_later_sync: number
+  collected: Collected[]
+}
+
 interface Props {
-  fatherFavTableData: Folder[]
-  fatherFavTotal: number
-  fatherCollectedTableData: Collected[]
-  fatherCollectedTotal: number
   fatherMid: number
-  fatherWatchLaterSync: number
 }
 
 const propsData = defineProps<Props>()
+
+const accountSettings = ref<AccountSettings>({
+  mid: 0,
+  folders: [],
+  watch_later_sync: 0,
+  collected: []
+})
+
+const watchLaterSync = ref<number>(0)
 
 const favTableData = ref<Folder[]>([])
 const favQuery = ref({
@@ -123,8 +136,8 @@ const favQuery = ref({
 })
 const favTotal = ref<number>(0)
 const GetFavourList = () => {
-  if (propsData.fatherFavTotal == 0) return
-  favTableData.value = propsData.fatherFavTableData.slice(
+  if (favTotal.value == 0) return
+  favTableData.value = accountSettings.value.folders.slice(
     (favQuery.value.page - 1) * favQuery.value.page_size,
     favQuery.value.page * favQuery.value.page_size
   )
@@ -138,49 +151,50 @@ const collectedQuery = ref({
 })
 const collectedTotal = ref<number>(0)
 const GetCollectedList = () => {
-  if (propsData.fatherCollectedTotal == 0) return
-  collectedTableData.value = propsData.fatherCollectedTableData.slice(
+  if (collectedTotal.value == 0) return
+  collectedTableData.value = accountSettings.value.collected.slice(
     (collectedQuery.value.page - 1) * collectedQuery.value.page_size,
     collectedQuery.value.page * collectedQuery.value.page_size
   )
 }
 
-const mid = ref<number>(0)
-const watchLaterSync = ref<number>(0)
-
-
 const InitSettings = () => {
-  mid.value = propsData.fatherMid
-  watchLaterSync.value = propsData.fatherWatchLaterSync
+  getAccountSettings(propsData.fatherMid).then(res => {
+    accountSettings.value = res.data
 
-  collectedTotal.value = propsData.fatherCollectedTotal
-  GetCollectedList()
+    watchLaterSync.value = accountSettings.value.watch_later_sync
 
-  favTotal.value = propsData.fatherFavTotal
-  GetFavourList()
+    collectedTotal.value = accountSettings.value.collected.length
+    collectedTableData.value = accountSettings.value.collected
+
+    favTotal.value = accountSettings.value.folders.length
+    favTableData.value = accountSettings.value.folders
+    GetCollectedList()
+    GetFavourList()
+  })
 }
 
 const SetFavSync = (mlid: number, targetSync: number) => {
   if (targetSync == 1) {
-    setSyncFav({ mid: mid.value, mlid: mlid })
+    setSyncFav({ mid: propsData.fatherMid, mlid: mlid })
   } else {
-    setNotSyncFav({ mid: mid.value, mlid: mlid })
+    setNotSyncFav({ mid: propsData.fatherMid, mlid: mlid })
   }
 }
 
 const SetCollectedSync = (coll_id: number, targetSync: number) => {
   if (targetSync == 1) {
-    setSyncCollected({ mid:mid.value, coll_id: coll_id })
+    setSyncCollected({ mid:propsData.fatherMid, coll_id: coll_id })
   } else {
-    setNotSyncCollected({ mid:mid.value, coll_id: coll_id })
+    setNotSyncCollected({ mid:propsData.fatherMid, coll_id: coll_id })
   }
 }
 
 const SetWatchLaterSync = () => {
   if (watchLaterSync.value == 1) {
-    setSyncWatchLater({ mid: mid.value })
+    setSyncWatchLater({ mid: propsData.fatherMid })
   } else {
-    setNotSyncWatchLater({ mid: mid.value })
+    setNotSyncWatchLater({ mid: propsData.fatherMid })
   }
 }
 
