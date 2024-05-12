@@ -32,3 +32,10 @@ export const qrCodeStatus = (qrCodeId: string) => {
     method: 'GET'
   })
 }
+
+export const getAccountSettings = (mid: number)=>{
+  return $http({
+    url: '/account/settings/' + mid,
+    method: 'GET'
+  })
+}
